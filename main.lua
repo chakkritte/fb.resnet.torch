@@ -16,6 +16,21 @@ local Trainer = require 'train'
 local opts = require 'opts'
 local checkpoints = require 'checkpoints'
 
+-- Load the display package
+display = require 'display'
+
+-- Tell the library, if you used a custom port or a remote server (default is 127.0.0.1).
+display.configure({hostname='0.0.0.0', port=1111})
+
+local config = {
+  title = "Accuracy",
+  labels = {"epoch", "accuracy-top1", "accuracy-top5"},
+  ylabel = "ratio",
+}
+
+local acc_history = {}
+
+
 -- we don't  change this to the 'correct' type (e.g. HalfTensor), because math
 -- isn't supported on that type.  Type conversion later will handle having
 -- the correct type.
@@ -54,7 +69,13 @@ for epoch = startEpoch, opt.nEpochs do
    local trainTop1, trainTop5, trainLoss = trainer:train(epoch, trainLoader)
    -- Run model on validation set
    local testTop1, testTop5 = trainer:test(epoch, valLoader)
+   -- update save log
    errLogger:add{['% test top1']    = (100-testTop1), ['% test top5']    = (100-testTop5)}
+   -- update plot data
+   table.insert(acc_history, {epoch,(100-testTop1),(100-testTop5)})
+   -- display
+   config.win = display.plot(acc_history, config)
+   
    local bestModel = false
    if testTop1 < bestTop1 then
       bestModel = true
