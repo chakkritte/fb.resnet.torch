@@ -47,13 +47,14 @@ end
 local startEpoch = checkpoint and checkpoint.epoch + 1 or opt.epochNumber
 local bestTop1 = math.huge
 local bestTop5 = math.huge
+local errLogger = optim.Logger('error.log')
+
 for epoch = startEpoch, opt.nEpochs do
    -- Train for a single epoch
    local trainTop1, trainTop5, trainLoss = trainer:train(epoch, trainLoader)
-
    -- Run model on validation set
    local testTop1, testTop5 = trainer:test(epoch, valLoader)
-
+   errLogger:add{['% test top1']    = (100-testTop1), ['% test top5']    = (100-testTop5)}
    local bestModel = false
    if testTop1 < bestTop1 then
       bestModel = true
