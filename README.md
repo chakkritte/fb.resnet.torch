@@ -33,6 +33,12 @@ To train ResNet-50 on 4 GPUs:
 th main.lua -depth 50 -batchSize 256 -nGPU 4 -nThreads 8 -shareGradInput true -data [imagenet-folder]
 ```
 
+## Access top-1 and top-5 accuracy on web browser
+```bash
+http://[YourIp]:1111
+```
+
+
 ## Trained models
 
 Trained ResNet 18, 34, 50, 101, 152, and 200 models are [available for download](pretrained). We include instructions for [using a custom dataset](pretrained/README.md#fine-tuning-on-a-custom-dataset), [classifying an image and getting the model's top5 predictions](pretrained/README.md#classification), and for [extracting image features](pretrained/README.md#extracting-image-features) using a pre-trained model.
