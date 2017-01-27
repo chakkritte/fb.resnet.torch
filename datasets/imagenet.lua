@@ -77,7 +77,7 @@ local pca = {
    },
 }
 
-function ImagenetDataset:preprocess(meanstdVal)
+function ImagenetDataset:preprocess()
    if self.split == 'train' then
       return t.Compose{
          t.RandomSizedCrop(224),
@@ -87,7 +87,7 @@ function ImagenetDataset:preprocess(meanstdVal)
             saturation = 0.4,
          }),
          t.Lighting(0.1, pca.eigval, pca.eigvec),
-         t.ColorNormalize(meanstdVal),
+         t.ColorNormalize(meanstd),
          t.HorizontalFlip(0.5),
       }
    elseif self.split == 'val' then
