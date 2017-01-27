@@ -16,10 +16,15 @@ Threads.serialization('threads.sharedserialize')
 local M = {}
 local DataLoader = torch.class('resnet.DataLoader', M)
 
-function DataLoader.create(opt)
+meanstd = {}
+
+
+function DataLoader.create(opt,meanstd)
    -- The train and val loader
    local loaders = {}
-
+   
+   meanstd = meanstd
+   
    for i, split in ipairs{'train', 'val'} do
       local dataset = datasets.create(opt, split)
       loaders[i] = M.DataLoader(dataset, opt, split)
@@ -27,6 +32,8 @@ function DataLoader.create(opt)
 
    return table.unpack(loaders)
 end
+
+
 
 function DataLoader:__init(dataset, opt, split)
    local manualSeed = opt.manualSeed
@@ -39,7 +46,7 @@ function DataLoader:__init(dataset, opt, split)
       end
       torch.setnumthreads(1)
       _G.dataset = dataset
-      _G.preprocess = dataset:preprocess()
+      _G.preprocess = dataset:preprocess(meanstd)
       return dataset:size()
    end
 
