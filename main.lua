@@ -47,8 +47,10 @@ local checkpoint, optimState = checkpoints.latest(opt)
 -- Create model
 local model, criterion = models.setup(opt, checkpoint)
 
+meanstd = torch.load('meanstdCache.t7')
+
 -- Data loading
-local trainLoader, valLoader = DataLoader.create(opt)
+local trainLoader, valLoader = DataLoader.create(opt,meanstd)
 
 -- The trainer handles the training loop and evaluation on validation set
 local trainer = Trainer(model, criterion, opt, optimState)
